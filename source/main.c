@@ -273,13 +273,13 @@ int main(int argc, char **argv)
             printf("Press b\n");
         }
         
-        if (kDown & KEY_DUP)
+        if (kDown & KEY_DUP || kDown & KEY_LSTICK_UP  || kDown & KEY_RSTICK_UP)
         {
             if (cursor_y > 0) cursor_y--;
             print_dir();
         }
         
-        if (kDown & KEY_DDOWN)
+        if (kDown & KEY_DDOWN  || kDown & KEY_RSTICK_DOWN  || kDown & KEY_RSTICK_DOWN)
         {
             cursor_y++;
             print_dir();
@@ -301,7 +301,7 @@ int main(int argc, char **argv)
             track_count = gme_track_count(emu);
             printf("track count:%d\n", track_count);
 
-            buffer_size = 26880;
+            buffer_size = 0xF000;
 
             // Allocate the buffer.
             out_buf_data = memalign(0x1000, buffer_size);
@@ -345,15 +345,14 @@ int main(int argc, char **argv)
 
                 if (kDown & KEY_DUP)
                 {
-                    buffer_size-=0x80;
+                    buffer_size+=0x80;
                     memlogic = 1;
                 }
                 if (kDown & KEY_DDOWN)
                 {
-                    buffer_size+=0x80;
+                    buffer_size-=0x80;
                     memlogic = 1;
                 }
-
 
                 if (kDown & KEY_DLEFT)
                 {
@@ -367,6 +366,30 @@ int main(int argc, char **argv)
                     memlogic = 1;
                 }
 
+                if (kDown & KEY_ZL)
+                {
+                    buffer_size-=0x100;
+                    memlogic = 1;
+                }
+                
+                if (kDown & KEY_ZR)
+                {
+                    buffer_size+=0x100;
+                    memlogic = 1;
+                }
+
+
+                if (kDown & KEY_PLUS)
+                {
+                    buffer_size+=0x800;
+                    memlogic = 1;
+                }
+                
+                if (kDown & KEY_MINUS)
+                {
+                    buffer_size-=0x800;
+                    memlogic = 1;
+                }
 
                 if (memlogic == 1) {
                     memlogic = 0;
@@ -401,7 +424,7 @@ int main(int argc, char **argv)
                 
                 if ((kDown & KEY_R) || gme_track_ended(emu) == 1)
                 {
-                    if (current_track < track_count) current_track++;
+                    if (current_track+1 < track_count) current_track++;
                     shoulderLogic();
                     start_time = _t;
                 }
