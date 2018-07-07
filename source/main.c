@@ -301,7 +301,7 @@ int main(int argc, char **argv)
             track_count = gme_track_count(emu);
             printf("track count:%d\n", track_count);
 
-            buffer_size = 0xF000;
+            buffer_size = 20160;
 
             // Allocate the buffer.
             out_buf_data = memalign(0x1000, buffer_size);
@@ -356,13 +356,13 @@ int main(int argc, char **argv)
 
                 if (kDown & KEY_DLEFT)
                 {
-                    buffer_size-=0x10;
+                    buffer_size-=4;
                     memlogic = 1;
                 }
                 
                 if (kDown & KEY_DRIGHT)
                 {
-                    buffer_size+=0x10;
+                    buffer_size+=4;
                     memlogic = 1;
                 }
 
